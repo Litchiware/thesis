@@ -448,7 +448,7 @@ $V = (V_1, V_2, ..., V_L)^T$，那么可以将平均值下采样的计算式~\re
 \subsection{实验过程}
 
 在本章的仿真实验中，我们使用5个图~\ref{fig:cnn_classifier}中虚线框表示的基本单元顺序连接，
-各层节点的数据维度变化情况如图~\ref{fig:cnn_data}所示。图中的模块1-4均表示卷积层＋ReLU层
+各层节点的数据维度变化情况如图~\ref{fig:cnn_data}所示。图中的模块1-5均表示卷积层＋ReLU层
 ＋下采样层的结构，各模块中的卷积层和下采样层的参数如表~\ref{tab:layer_parameters}所示。
 \begin{figure}[ht]
   \centering%
@@ -498,7 +498,7 @@ $V = (V_1, V_2, ..., V_L)^T$，那么可以将平均值下采样的计算式~\re
 本之间的相似程度也更高。最后本章的故障诊断模型可以达到98.27\%的预测精度，也印证了这一点。
 但是，本章模型的训练时间为102s，远高于第~\ref{cha:chapter2}章中基于SVM的级联分类模型训练
 所用时间，这也是基于CNN的模型的缺点之一。表~\ref{tab:chap3:confusion_matrix}给出了模型在
-训练集上的混淆矩阵。
+测试集上的混淆矩阵。
 \begin{table}[htb]
   \centering
   \begin{minipage}[t]{0.9\linewidth} % 如果想在表格中使用脚注，minipage是个不错的办法
