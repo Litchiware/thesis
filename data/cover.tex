@@ -62,7 +62,7 @@
   %
   % 关键词用“英文逗号”分割
   ckeywords={故障诊断, 多尺度, 特征提取, 支持向量机, 神经网络},
-  ekeywords={Fault Diagnosis, Machine Learning, Neural Network, Multi-scale, Feature Extraction}
+  ekeywords={Fault Diagnosis, Multi-scale, Feature Extraction, SVM, Neural Network}
 }
 
 % 定义中英文摘要和关键字
@@ -107,23 +107,54 @@
 % \ckeywords{\TeX, \LaTeX, CJK, 模板, 论文}
 
 \begin{eabstract}
-   An abstract of a dissertation is a summary and extraction of research work
-   and contributions. Included in an abstract should be description of research
-   topic and research objective, brief introduction to methodology and research
-   process, and summarization of conclusion and contributions of the
-   research. An abstract should be characterized by independence and clarity and
-   carry identical information with the dissertation. It should be such that the
-   general idea and major contributions of the dissertation are conveyed without
-   reading the dissertation.
+  With the manufacturing automation getting increasingly popular,
+  Industrial systems have become large-scale and highly integrated,
+  and the structure of a single device is also very complex. Hence,
+  fault diagnosis technology is the key to reliable operation of
+  these large and complex systems.
 
-   An abstract should be concise and to the point. It is a misunderstanding to
-   make an abstract an outline of the dissertation and words ``the first
-   chapter'', ``the second chapter'' and the like should be avoided in the
-   abstract.
+  This paper mainly studies the data based fault diagnosis algorithms.
+  We first represent the signal segment with resulting sequence of real
+  discrete Fourier transform (RDFT), and propose two single-scale
+  feature based models and one multi-scale feature based model to
+  extract further features and to do fault classification.
 
-   Key words are terms used in a dissertation for indexing, reflecting core
-   information of the dissertation. An abstract may contain a maximum of 5 key
-   words, with semi-colons used in between to separate one another.
+  First, we use a single average pooling operator to make single-scale
+  feature extraction on the RDFT sequence. And a cascade classifier is
+  designed in view of the hierarchies of the sample classes.
+  In experimental verification, we also investigate the impact of the
+  kernel width of average pooling operator on the model's final prediction
+  accuracy. Experimental results show that whether the kernel width is
+  too large or too small, it will decrease the model's accuracy, which is the
+  limitation of using one single pooling operator for feature extraction.
+  So we Consider designing a model that contains multiple pooling operations
+  to perform feature extraction.
+
+  The convolutional neural network (CNN) utilizes the structure of stacking
+  multiple convolutional layers and pooling layers to extracting advanced 
+  features from input data. So we design a network with a similar structure
+  as VGG to complete feature extraction and classification of the RDFT sequences.
+  Although this model also extracts single-scale features, compared with the
+  previous one, due to multi-stage pooling operations, we can avoid the loss
+  of too much information when extract the advanced features from the RDFT
+  sequences.
+
+  To further improve the diagnostic accuracy of the model, upsampling layer is
+  added to the VGG-like model, and a recursive network structure is designed to
+  have the ability of extracting multi-scale features. Then, as a part of the 
+  whole network, it is used to extract and merge features in multiple scales.
+  When establishing this multi-scale network, we deal with the input in two
+  branches in each recursion. One of them goes through the pooling layers,
+  convolutional layers and upsampling layers, while the other branch only goes
+  through convolutional layers, both of which are finally added together as the
+  output returned to the upper recursion. The advantage of this structure is
+  that some details of the input sequence are preserved by adding the result
+  before pooling operation to the final features, which can make the model
+  better understand the input sequences.
+
+  Through the experiments on CWRU rolling bearing fault database, the diagnostic
+  effect of the three models are compared, The advantage of multi-scale feature
+  extraction in fault diagnosis algorithm are verified.
 \end{eabstract}
 
 % \ekeywords{\TeX, \LaTeX, CJK, template, thesis}
