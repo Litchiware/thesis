@@ -73,12 +73,12 @@
 
   本文主要研究了基于数据的故障诊断算法。我们在信号片段的RDFT频谱
   序列的基础上，分别设计了两个基于单一尺度信号特征提取方法的故障
-  诊断模型，以及一个基于多尺度信号特征提取的故障诊断模型
+  诊断模型，以及一个基于多尺度信号特征提取的故障诊断模型。
 
   首先我们使用单层下采样操作在信号的RDFT频谱序列上完成了单一尺度的
-  特征提取过程。并针对数据样本的类别间固有的层次性设计了一个级联分
+  特征提取过程，并针对数据样本的类别间固有的层次性设计了一个级联分
   类器来实现特征分类。在仿真实验中，我们还考察了下采样的核宽度对模
-  型最终的预测精度的影响，实验结果证明下采样核宽度过大或过小都会降
+  型最终的预测精度的影响。实验结果证明下采样核宽度过大或过小都会降
   低模型的精度，这是采用单层下采样进行特征提取带来的局限，因此我们
   考虑设计一种包含多次下采样操作的模型来完成特征提取。
 
@@ -120,14 +120,14 @@
   extract further features and to do fault classification.
 
   First, we use a single average pooling operator to make single-scale
-  feature extraction on the RDFT sequence. And a cascade classifier is
+  feature extraction on the RDFT sequence. A cascade classifier is
   designed in view of the hierarchies of the sample classes.
   In experimental verification, we also investigate the impact of the
   kernel width of average pooling operator on the model's final prediction
   accuracy. Experimental results show that whether the kernel width is
   too large or too small, it will decrease the model's accuracy, which is the
   limitation of using one single pooling operator for feature extraction.
-  So we Consider designing a model that contains multiple pooling operations
+  So we consider designing a model that contains multiple pooling operations
   to perform feature extraction.
 
   The convolutional neural network (CNN) utilizes the structure of stacking
@@ -137,23 +137,23 @@
   Although this model also extracts single-scale features, compared with the
   previous one, due to multi-stage pooling operations, we can avoid the loss
   of too much information when extract the advanced features from the RDFT
-  sequences.
+  sequence.
 
   To further improve the diagnostic accuracy of the model, upsampling layer is
-  added to the VGG-like model, and a recursive network structure is designed to
-  have the ability of extracting multi-scale features. Then, as a part of the 
+  introduced into the VGG-like model, and a recursive network structure is
+  designed to be able to extract multi-scale features. Then, as a part of the 
   whole network, it is used to extract and merge features in multiple scales.
   When establishing this multi-scale network, we deal with the input in two
   branches in each recursion. One of them goes through the pooling layers,
   convolutional layers and upsampling layers, while the other branch only goes
   through convolutional layers, both of which are finally added together as the
   output returned to the upper recursion. The advantage of this structure is
-  that some details of the input sequence are preserved by adding the result
-  before pooling operation to the final features, which can make the model
-  better understand the input sequences.
+  that some details of the input sequence are preserved by adding the branch
+  without pooling operations to the final result, making the model understand
+  the input sequence more deeply.
 
   Through the experiments on CWRU rolling bearing fault database, the diagnostic
-  effect of the three models are compared, The advantage of multi-scale feature
+  effect of the three models are compared, and the advantage of multi-scale feature
   extraction in fault diagnosis algorithm are verified.
 \end{eabstract}
 
