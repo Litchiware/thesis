@@ -131,7 +131,7 @@ WPT具有更强的高频区信号分解能力，这使它成为检测和区分�
 越多。文献~\inlinecite{chen2007vibration}使用SGWT从水力电机的振动信号中提
 取特征，对不同的活塞故障状态进行分类。文献~\inlinecite{he2009principle}通
 过将SGWT应用于从数控机床的铣削过程测量的声发射信号来检测铣刀破损。文献~\inlinecite{bao2009anti}
-为解决故障特征提取中的频率混叠问题，使用抗锯齿提升方案对信号进行了变换，
+为解决故障特征提取中的频率混叠问题，使用抗锯齿SGWT对信号进行了变换，
 从而达到了较高的故障分类精度。文献~\inlinecite{hongkai2006gearbox}使用自
 适应冗余SGWT分析了具有磨损故障的齿轮箱的振动信号，并从复杂背景中提取了脉
 冲分量。同样，SGWT也经常被用来对信号进行去噪处理。在自适应SGWT的基础上，
@@ -180,9 +180,10 @@ EMD虽然有较好的处理非线性和非平稳信号的能力，但是同时�
 主要有PCA、 DCA、ICA、KPCA等。
 
 PCA的提出最初是为了降低大型相关数据集的维数，同时仍然保留原始数据集中的
-大部分信息~\cite{abdi2010principal}。由于其简单的形式和处理大量数据的能力，PCA已经广泛应用于许多
-计算领域，如图像分析、特征提取、模式识别、数据压缩和时间序列预测。此外，
-PCA在过程监控和故障诊断领域的应用也得到了极大的发展。
+大部分信息~\cite{abdi2010principal}。由于其简单的形式和处理大量数据的能
+力，PCA已经广泛应用于许多计算领域，如图像分析、特征提取、模式识别、数据
+压缩和时间序列预测。此外，PCA在过程监控和故障诊断领域的应用也得到了极大
+的发展。
 
 运用PCA技术进行故障定位经典的方法是贡献图法~\cite{miller1998contribution}，
 当判断发生故障时，定义故障贡献度函数，分别计算多个变量的贡献度函数值，
@@ -437,3 +438,104 @@ MSE算法由以下两个步骤组成~\cite{costa2002multiscale, costa2005multisc
 的结果，获得更加稳定和一致的特征。在此基础上，结合Fisher得分进行特征选择
 并通过SVM进行分类，完成了对滚动轴承的故障诊断过程。
 
+\subsubsection{多尺度形态分析}
+
+数学形态学（Mathematical Morphology, MM）~\cite{haralick1987image}是一种
+非线性分析方法，最初是为图像处理而设计的，后来在信号分析等领域也得到了广
+泛的应用。通过对原始信号进行形态分解~\cite{pitas1990morphological}，复杂
+信号可以从背景中分离出来，并分解为保留了原始信号形态特征的多种分量。信号
+形态处理的基本思路是通过一些形态变换来改变信号的形状。基本的形态变换算子
+有扩张、腐蚀、开、闭运算。
+
+令$f(n), n={0, 1, ..., N-1}$表示一个一维信号，$g(n), n={0, 1, ..., M-1}$
+表示一个结构元素（Structuring Element, SE），腐蚀和扩张算子可以定义为~\ref{equ:chap1:erosion_dilation}
+式。
+\begin{equation}
+  \label{equ:chap1:erosion_dilation}
+  \begin{aligned}
+    (f\ominus g)(n) = & \min_{m=0}^{M-1}\left[f(n+m)-g(m)\right] \\
+    (f\oplus g)(n) = & \max_{m=0}^{M-1}\left[f(n-m)+g(m)\right]
+  \end{aligned}
+\end{equation}
+
+其中$\ominus$表示腐蚀运算，$\oplus$表示扩张运算。基于这两种运算，两外两
+种形态变换算子开、闭运算可以由~\ref{equ:chap1:opening_closing}式定义。
+\begin{equation}
+  \label{equ:chap1:opening_closing}
+  \begin{aligned}
+    (f\circ g)(n) = & (f\ominus g\oplus g)(n) \\
+    (f\bullet g)(n) = & (f\oplus g\ominus g)(n)
+  \end{aligned}
+\end{equation}
+
+其中$\circ$表示开运算，$\bullet$表示闭运算。表~\ref{tab:morphological_operator_effect}
+列出了四种基本形态运算对信号脉冲的影响。
+\begin{table}[htb]
+  \centering
+  \begin{minipage}[t]{0.6\linewidth}
+  \caption{四种基本形态运算对信号脉冲的影响}
+  \label{tab:morphological_operator_effect}
+    \begin{tabularx}{\linewidth}{XXX}
+      \toprule[1.5pt]
+      形态运算 & 正脉冲 & 负脉冲 \\\midrule[1pt]
+      腐蚀 & 抑制 & 平滑 \\
+      扩张 & 平滑 & 抑制 \\
+      开运算 & 抑制 & 保留 \\
+      开运算 & 保留 & 抑制 \\
+      \bottomrule[1.5pt]
+    \end{tabularx}
+  \end{minipage}
+\end{table}
+
+此外，还有其他一些由这些运算组合而成的形态运算，例如比较常用的平均算子AVG
+和梯度算子DIF，如式~\ref{equ:chap1:average_difference}所示。
+\begin{equation}
+  \label{equ:chap1:average_difference}
+  \begin{aligned}
+    AVG(f) = & (f\bullet g + f\circ g)/2 \\
+    DIF(f) = & f\bullet g - f\circ g 
+  \end{aligned}
+\end{equation}
+
+在实际应用中，通常根据信号处理的不同场景选择或组合使用合适的形态运算。
+SE是形态分析的另一个关键部分。通常，只有当所关心的信号成分的尺度和形
+状与SE的尺度和形状匹配时，才能在经过形态运算后保留下来。因此，应该根
+据待分析的信号来选择SE的形状、长度和高度（振幅）。SE的形状可以从规则
+到不规则的曲线变化，例如水平线、三角和半圆等，如图~\ref{fig:se_shape}
+所示。
+\begin{figure}[ht]
+  \centering
+  \subcaptionbox{呈水平状的SE\label{fig:se_shape_flat}}
+  {\includegraphics[width=3cm]{se_flat}}
+  \hspace{4em}
+  \subcaptionbox{呈三角状的SE\label{fig:se_shape_triangular}}
+  {\includegraphics[width=3cm]{se_triangular}}
+  \hspace{4em}
+  \subcaptionbox{呈半圆状的SE\label{fig:se_shape_semicircular}}
+  {\includegraphics[width=3cm]{se_semicircular}}
+  \caption{不同形状的SE}
+  \label{fig:se_shape}
+\end{figure}
+
+SE的尺度，包括长度和高度对于一维信号的形态分析也很重要。传统的形态分
+析是在单一尺度下进行的，其中SE是根据先验知识来设定的。然而这些先验知
+识并不是在任何情况下都适用，而且很多问题中我们很难获取到这些先验知识。
+因此，为了从信号中提取不同尺度的形态特征，需要进行多尺度形态分析。多
+尺度形态分析是使用多种尺度的一组SE，分别对原始信号进行形态分析，从而
+获得多种尺度下特征的过程。
+
+文献~\inlinecite{haorujiang2008mmf}使用形态开运算对滚动轴承振动信号
+进行多尺度形态分解，并计算不同尺度下的形态谱，然后在此基础上计算不同
+尺度下信号的形态谱熵值，进而以此为特征完成了不同故障类型的定量区分。
+文献~\inlinecite{wangbing2013mmf}使用多尺度形态分析将电机滚动轴承的
+振动信号分解到多个尺度上，并在此基础上计算能谱熵和奇异谱熵作为特征，
+结合灰色关联分析，完成了对电机轴承退化状态的评估。文献~\inlinecite{libing2011adaptive, li2011weighted}
+使用梯度形态算子和水平状SE对滚动轴承的振动信号进行了多尺度形态分解，
+并且定义了一种自适应的权值计算方法，对分解得到的各尺度下的信号进行
+加权，使得小尺度下分解得到的信号具有较小的权重，大尺度下分解得到的
+信号具有较大的权重，从而在保留原始信号细节的同时有效地抑制了噪声。
+从实验结果可以看出这种方法能够有效地从故障轴承的振动信号中提取出特
+征冲击信号。文献~\inlinecite{tangguiji2015adaptive}使用Top-Hat形态
+算子对滚动轴承的振动信号进行多尺度形态分析，并在此基础上通过计算特
+征幅值能量比（Feature Amplitude Energy Radio, FAER）来自适应地选择
+最佳尺度，成功地应用于轴承的故障增强检测当中。
