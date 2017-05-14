@@ -365,20 +365,14 @@ $5\times 5\times 3$（宽度方向和高度方向各5个像素，深度与图片
 同样，给定一个信号片段$x$，假设其采样点数为$N$，即$x = (x_1,x_2,...,x_N)^T$，下采样的核宽度
 为$F$，下采样步长$S=F$。由~\ref{subsection:cnn}中的介绍可知，下采样之后的特征向量长度
 $L = (N-F)/S+1=N/F$。与第二章中一样，我们首先对$x$做实数形式的傅立叶变换，得到$x$的RDFT频谱
-序列$\hat{X} = (\hat{X}_1, \hat{X}_2, ..., \hat{X}_N)^T$。同样，为了避免样本相位的不一致对
-最终模型的诊断精度产生影响，同时也避免在后续的操作中正负值相互抵消，我们对$\hat{X}$取了绝对
-值，即$X = (|\hat{X}_1|, |\hat{X}_2|, ..., |\hat{X}_N|)^T$。下采样之后得到的特征向量记为
-$V = (V_1, V_2, ..., V_L)^T$，那么可以将平均值下采样的计算~(\ref{equ:chap2:pooling})式重新写为
-~(\ref{equ:chap3:average_pooling})式。
-\begin{equation}
-  \label{equ:chap3:average_pooling}
-  V_k = \frac{1}{F}\sum_{j=1}^{F}X_{(k-1)F+j}, k=1,2,...,L
-\end{equation}
-
-最大值下采样可以写为~(\ref{equ:chap3:max_pooling})
+序列$\widetilde{x} = (\widetilde{x}_1, \widetilde{x}_2, ..., \widetilde{x}_N)^T$。同样，为了避免样本相位的不一致对
+最终模型的诊断精度产生影响，同时也避免在后续的操作中正负值相互抵消，我们对$\widetilde{x}$取了绝对
+值，即$X = (|\widetilde{x}_1|, |\widetilde{x}_2|, ..., |\widetilde{x}_N|)^T$。下采样之后得到的特征向量记为
+$V = (V_1, V_2, ..., V_L)^T$，那么参考平均值下采样的计算式~(\ref{equ:chap2:pooling})，最大值
+下采样可以写为~(\ref{equ:chap3:max_pooling})式。
 \begin{equation}
   \label{equ:chap3:max_pooling}
-  V_k = \max{j=1}^{F}X_{(k-1)F+j}, k=1,2,...,L
+  V_k = \max_{j=1,...,F}X_{(k-1)F+j}, k=1,2,...,L
 \end{equation}
 
 图~\ref{fig:average_max_pooling_features}是某个采样点数为384的信号片段的原始波形、其对应的RDFT频谱序列、以及
