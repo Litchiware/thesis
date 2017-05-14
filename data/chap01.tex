@@ -307,7 +307,7 @@ ENN）的故障诊断方法。该方法减少了训练时间、提高了映射�
 度为$m$的子序列与另一个相同长度的子序列相等（在r的误差容忍范围内）时，将它
 们的长度增加为$m+1$后仍然相等的概率。我们将$m$称为嵌入维数。两个子序列之间
 距离定义为对应元素差值绝对值的最大值。例如，序列$x(i)$与序列$x(j)$之间的距
-离$d_{ij}$定义为~\ref{equ:chap1:l1_norm}式。
+离$d_{ij}$定义为~(\ref{equ:chap1:l1_norm})式。
 \begin{equation}
   \label{equ:chap1:l1_norm}
   \begin{aligned}
@@ -318,7 +318,7 @@ ENN）的故障诊断方法。该方法减少了训练时间、提高了映射�
 
 将两个长度为$m$的子序列相等（在r的误差容忍范围内）的概率记作$B^m(r)$。那么
 $B^m(r)$可以如下计算：对每个$i$，计算$x(i)$与其余子序列$x(j)(j=1,2,...,N-m; j\neq i)$
-的距离$d_{ij}$，并统计$d_{ij}$小于$r$的平均个数，如~\ref{equ:chap1:bmr}式所
+的距离$d_{ij}$，并统计$d_{ij}$小于$r$的平均个数，如~(\ref{equ:chap1:bmr})式所
 示。
 \begin{equation}
   \label{equ:chap1:bmr}
@@ -336,13 +336,13 @@ $B^m(r)$可以如下计算：对每个$i$，计算$x(i)$与其余子序列$x(j)(
   \right.
 \end{equation}
 
-样本熵可以定义为~\ref{equ:chap1:sample_entropy}式。
+样本熵可以定义为~(\ref{equ:chap1:sample_entropy})式。
 \begin{equation}
   \label{equ:chap1:sample_entropy}
   \text{SampEn}(m, r) = \lim_{N\to\infty}-\ln\frac{B^{m+1}(r)}{B^m(r)}
 \end{equation}
 
-在$N$为有限值时，~\ref{equ:chap1:sample_entropy}式可以写成~\ref{equ:chap1:sample_entropy_finite}
+在$N$为有限值时，~(\ref{equ:chap1:sample_entropy})式可以写成~(\ref{equ:chap1:sample_entropy_finite})
 式。
 \begin{equation}
   \label{equ:chap1:sample_entropy_finite}
@@ -359,7 +359,7 @@ MSE算法由以下两个步骤组成~\cite{costa2002multiscale, costa2005multisc
 一组表示序列。在尺度为$\tau$的粗粒化过程中，将给定时间序列的每个长度为$\tau$
 的连续不重叠区间内的数据点进行平均，所得的结果作为尺度$\tau$下的粗粒化表示
 序列。例如，对于一个长度为$N$的离散信号$\{x_1,...,x_i,...,x_N\}$，原始时间
-序列在尺度$\tau$下的粗粒化表示序列$\{y^{(\tau)}\}$的计算方式如~\ref{equ:chap1:coarse_grained}
+序列在尺度$\tau$下的粗粒化表示序列$\{y^{(\tau)}\}$的计算方式如~(\ref{equ:chap1:coarse_grained})
 式所示。
 \begin{equation}
   \label{equ:chap1:coarse_grained}
@@ -414,7 +414,7 @@ MSE算法由以下两个步骤组成~\cite{costa2002multiscale, costa2005multisc
 有扩张、腐蚀、开、闭运算。
 
 令$f(n), n={0, 1, ..., N-1}$表示一个一维信号，$g(n), n={0, 1, ..., M-1}$
-表示一个结构元素（Structuring Element, SE），腐蚀和扩张算子可以定义为~\ref{equ:chap1:erosion_dilation}
+表示一个结构元素（Structuring Element, SE），腐蚀和扩张算子可以定义为~(\ref{equ:chap1:erosion_dilation})
 式。
 \begin{equation}
   \label{equ:chap1:erosion_dilation}
@@ -425,7 +425,7 @@ MSE算法由以下两个步骤组成~\cite{costa2002multiscale, costa2005multisc
 \end{equation}
 
 其中$\ominus$表示腐蚀运算，$\oplus$表示扩张运算。基于这两种运算，另外两
-种形态变换算子开、闭运算可以由~\ref{equ:chap1:opening_closing}式定义。
+种形态变换算子开、闭运算可以由~(\ref{equ:chap1:opening_closing})式定义。
 \begin{equation}
   \label{equ:chap1:opening_closing}
   \begin{aligned}
@@ -454,7 +454,7 @@ MSE算法由以下两个步骤组成~\cite{costa2002multiscale, costa2005multisc
 \end{table}
 
 此外，还有其他一些由这些运算组合而成的形态运算，例如比较常用的平均算子AVG
-和梯度算子DIF，如式~\ref{equ:chap1:average_difference}所示。
+和梯度算子DIF，如~(\ref{equ:chap1:average_difference})式所示。
 \begin{equation}
   \label{equ:chap1:average_difference}
   \begin{aligned}
@@ -510,8 +510,8 @@ SE的尺度，包括长度和高度对于一维信号的形态分析也很重要
 
 本文的组织结构框架如图~\ref{fig:overall_structure}所示。本文提出了
 三个故障诊断方法，其中两个是基于单一尺度特征的故障诊断方法，另外一
-个是基于多尺度特征的故障诊断方法。这三个方法分别在本文的第~\ref{cha:chapter2}、
-~\ref{cha:chapter3}、~\ref{cha:chapter4}章做详细介绍。本文中提出的
+个是基于多尺度特征的故障诊断方法。这三个方法分别在本文的第~\ref{cha:chapter2}、~\ref{cha:chapter3}、~\ref{cha:chapter4}
+章做详细介绍。本文中提出的
 这三个故障诊断方法在数据预处理阶段均使用实数形式的傅立叶变换（RDFT）
 对原始信号片段进行变换，将变换得到的RDFT频谱序列作为后面阶段的输入，
 从而消除对信号的随机截取带来的相位不一致问题。每一种方法都在CWRU滚
@@ -556,8 +556,8 @@ SE的尺度，包括长度和高度对于一维信号的形态分析也很重要
 特征往往带有更多的细节特征，而采样程度高时对应的小尺度特征往往带有
 更多的整体特征。而第~\ref{cha:chapter3}章中提出的基于CNN的故障诊断
 方法中，由于网络中多个下采样层是顺序连接的，因此网络中的特征的尺度
-是不断减小的，无法达到多种尺度下特征的融合效果。因此本章在第~\ref{cha:chapter2}、
-~\ref{cha:chapter3}章的方法的基础上，提出了一种基于CNN的递归式网络
+是不断减小的，无法达到多种尺度下特征的融合效果。因此本章在第~\ref{cha:chapter2}、~\ref{cha:chapter3}
+章的方法的基础上，提出了一种基于CNN的递归式网络
 结构，能够很好地融合多种尺度下输入信号的特征，在CWRU上的实验结果证
 明，本章设计的故障诊断方法比单一尺度下的方法更加有效，能够达到更高
 的诊断精度。

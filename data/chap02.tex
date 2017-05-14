@@ -4,25 +4,25 @@
 \section{引言}
 
 本章主要研究了单一尺度的特征提取方法及故障诊断模型，特征提取过程使用了平均值下采样的方法。
-由于下采样的过程中我们可以指定下采样的宽度，因此我们能够得到不同维度的特征向量（即不同尺度的
-特征）。本章也通过仿真实验对比研究了特征的不同个数对模型最终的预测精度的影响，从而选择最佳的
-特征个数。
+由于下采样的过程中我们可以指定下采样的核宽度，因此我们能够得到不同维度的特征向量（即不同尺度
+的特征）。本章也通过实验对比研究了特征的不同个数对模型最终的预测精度的影响，从而选择最佳
+的特征个数。
 
 本章首先对特征提取过程中用到的实数形式的离散傅立叶变换以及故障诊断模型中用到的支持向量机算法
-的基本原理做了简单的介绍，然后详细介绍了本章中设计的单一尺度下的特征提取方法，以及基于支持向
-量机的级联分类模型，之后简单地介绍了本文各章的仿真实验中都用到的实验数据集CWRU滚动轴承故障数
-据集，最后使用该数据集对本章设计的模型进行了验证。
+的基本原理做了简单的介绍，然后详细介绍了本章中设计的单一尺度的特征提取方法，以及基于支持向量
+机的级联分类模型，之后简单地介绍了本文各章的实验中都用到的实验数据集CWRU滚动轴承故障数据
+集，最后使用该数据集对本章设计的模型进行了验证。
 
 \section{基本理论}
 
 \subsection{实数形式的傅立叶变换}
 \label{subsection:rdft}
 
-离散傅立叶变换（Discrete Fourier transform, DFT)是信号处理中常用的一种技术，当信号从时域变换到
+离散傅立叶变换（Discrete Fourier Transform, DFT)是信号处理中常用的一种技术，当信号从时域变换到
 频域之后，能够将原始信号中包含的信息分为相位和幅度信息，
 往往能够更好地反映出信号的频谱结构和变化规律，从而简化信号分析的难度。在信号识别或分
 类等应用中，DFT经常被用来提取信号的频域特征。对于具有N个采样点的信号序列$\{x_n\}_{0\leq n < N}$，
-它的傅立叶变换如式~(\ref{equ:chap2:dft})所示。
+它的傅立叶变换如~(\ref{equ:chap2:dft})式所示。
 \begin{equation}
 \label{equ:chap2:dft}
   \hat{x}_k=\sum_{n=0}^{N-1}x_n e^{-i\frac{2\pi}{N}nk}, k=0,1,...,N-1
@@ -32,7 +32,7 @@
 提出的一种酉变幻~\cite{ersoy1985real}。RDFT在数据压缩、滤波等很多信号处理应用中的效果比DFT更
 加出色~\cite{ersoy1988fast}。同样，RDFT也有类似于快速傅立叶变换
 的快速计算方法RFFT~\cite{ersoy1988fast}。同样，对于具有N个采样点的信号序列$\{x_n\}_{0\leq n < N}$，
-它的实数形式的傅立叶变换如式~(\ref{equ:chap2:rdft})所示。
+它的实数形式的傅立叶变换如~(\ref{equ:chap2:rdft})式所示。
 \begin{equation}
 \label{equ:chap2:rdft}
   \widetilde{x}=
@@ -46,14 +46,14 @@
 
 1）实值性
 
-从式~(\ref{equ:chap2:dft})和式~(\ref{equ:chap2:rdft})中可以看出，DFT的结果是一个复数序列，
+从~(\ref{equ:chap2:dft})式和~(\ref{equ:chap2:rdft})式中可以看出，DFT的结果是一个复数序列，
 它的快速计算方法FFT涉及复数加法和乘法。但是在原始信号序列为实数序列时，
 RDFT的计算结果仍然是一个实数序列，因此其计算过程完全不需要用到复数的加法和乘法，从而降低了
 软硬件实现的复杂性，同时也便于显示和进一步处理。
 
 2）特征个数少
 
-从DFT的定义式~(\ref{equ:chap2:dft})可以看出，DFT的结果具有~(\ref{equ:chap2:symmetry})式所示
+从DFT的定义~(\ref{equ:chap2:dft})式可以看出，DFT的结果具有~(\ref{equ:chap2:symmetry})式所示
 的复共轭对称性。
 \begin{equation}
 \label{equ:chap2:symmetry}
@@ -89,7 +89,7 @@ $\theta^Tx^{(i)} \gg 0$并且对任意$y^{(i)} = 0$有$\theta^Tx^{(i)} \ll 0$，
 \begin{figure}[ht] % use float package if you want it here
   \centering
   \includegraphics{margin}
-  \caption{决策边界}
+  \caption{二分类问题}
   \label{fig:margin}
 \end{figure}
 
@@ -106,7 +106,7 @@ $y = 1$，但是即便是决策边界的一个微小的变化都会轻易地导�
 为了表述方便，我们首先需要引入一种新的记法来讨论分类问题。重新明确一下要解决的问题：特征为
 $x$，标签为$y$的二分类问题，求一个线性分类器。从现在开始，我们使用$y \in \{-1, 1\}$（而不是
 $\{0, 1\}$）来表示类别标签。另外，我们用参数$w, b$（而不是$\theta$）来表示我们的线性分类器，
-如式~\ref{equ:chap2:classifier}所示。
+如~(\ref{equ:chap2:classifier})式所示。
 \begin{equation}
   \label{equ:chap2:classifier}
   h_{w,b}(x) = g(w^Tx+b)
@@ -117,19 +117,19 @@ $\{0, 1\}$）来表示类别标签。另外，我们用参数$w, b$（而不是$
 \subsubsection{函数间隔和几何间隔}
 
 下面正式给出函数间隔和几何间隔的定义。给定一个训练样本$(x^{(i)},y^{(i)})$，定义$(w,b)$相对
-于训练样本的函数间隔如式~\ref{equ:chap2:fmargin_i}所示。
+于训练样本的函数间隔如~(\ref{equ:chap2:fmargin_i})式所示。
 \begin{equation}
   \label{equ:chap2:fmargin_i}
   \hat{\gamma}^{(i)} = y^{(i)}(w^Tx+b)
 \end{equation}
 
-从~\ref{equ:chap2:fmargin_i}式可以看出，在$y^{(i)} = 1$时，为了使函数间隔尽量大（即预测结果
+从~(\ref{equ:chap2:fmargin_i})式可以看出，在$y^{(i)} = 1$时，为了使函数间隔尽量大（即预测结果
 置信度尽量高），我们需要使$w^Tx+b$为一个尽可能大的正数。相反，在$y^{(i)} = -1$时，为了
 使函数间隔尽量大，$w^Tx+b$需要为一个尽可能小的负数。此外，$y^{(i)}(w^Tx+b) > 0$意味着我们的
 预测结果是正确的。因此，大的函数间隔代表了准确且高置信度的预测结果。
 
 给定一个训练集$S = \{(x^{(i)},y^{(i)});i = 1, ..., m\}$，定义$(w,b)$关于$S$的函数边界为
-所有训练样本的函数边界的最小值，记为$\hat{\gamma}$，可以用式~\ref{equ:chap2:fmargin}表示。
+所有训练样本的函数边界的最小值，记为$\hat{\gamma}$，可以用~(\ref{equ:chap2:fmargin})式表示。
 \begin{equation}
   \label{equ:chap2:fmargin}
   \hat{\gamma} = \min_{i=1,...,m}\hat{\gamma}^{(i)}
@@ -164,20 +164,20 @@ $(2w,2b)$会导致函数间隔变为原来的两倍。因此，我们需要引�
   \gamma^{(i)} = \frac{w^Tx^{(i)}+b}{\|w\|} = \left(\frac{w}{\|w\|}\right)^Tx^{(i)} + \frac{b}{\|w\|}
 \end{equation}
 
-式~\ref{equ:chap2:gmargin_i_2}对任意正样本（即$y^{(i)} = 1$）成立。对于一般情况，
+~(\ref{equ:chap2:gmargin_i_2})式对任意正样本（即$y^{(i)} = 1$）成立。对于一般情况，
 定义$(w,b)$关于训练样本$(x^{(i)}, y^{(i)})$的几何间隔为：
 \begin{equation}
   \label{equ:chap2:gmargin_i_3}
   \gamma^{(i)} = y^{(i)}\left(\left(\frac{w}{\|w\|}\right)^Tx^{(i)} + \frac{b}{\|w\|}\right)
 \end{equation}
 
-从~\ref{equ:chap2:gmargin_i_3}式可以看出，如果$\|w\|=1$，那么函数间隔将等于几何间隔。可以看出
+从~(\ref{equ:chap2:gmargin_i_3})式可以看出，如果$\|w\|=1$，那么函数间隔将等于几何间隔。可以看出
 与函数间隔不同的是如果我们用$2w$和$2b$分别替换$w$和$b$，那么几何间隔将不会发生改变。也正是由于
 几何间隔相对于参数缩放的这种不变性，当我们使用训练数据来拟合$w$和$b$的时候，我们可以引入任意
 的缩放约束，而不会改变模型本身。比如，可以令$\|w\|=1$，或者$|w_1|=5$，或者$|w_1+b|+|w_2|=2$等。
 
 同样，给定一个训练集$S=\{(x^{(i)},y^{(i)});i=1,...,m\}$，定义$(w,b)$关于$S$的几何间隔
-为所有训练样本的几何间隔的最小值，如~\ref{equ:chap2:gmargin}式所示。
+为所有训练样本的几何间隔的最小值，如~(\ref{equ:chap2:gmargin})式所示。
 \begin{equation}
   \label{equ:chap2:gmargin}
   \gamma=\min_{i=1,...,m}\gamma^{(i)}
@@ -187,7 +187,7 @@ $(2w,2b)$会导致函数间隔变为原来的两倍。因此，我们需要引�
 
 给定一个训练集，从前面的讨论可以得到一个自然的结论：通过寻找最大化几何间隔的决策边界，就能得到
 一个在训练集上拟合得很好的分类器。假设训练集上的两类样本是线性可分的，即存在分类超平面可以完全
-将两类样本分开，那么寻找最大化几何间隔的超平面的问题可以表述为~\ref{equ:chap2:opt1}式所示的优化
+将两类样本分开，那么寻找最大化几何间隔的超平面的问题可以表述为~(\ref{equ:chap2:opt1})式所示的优化
 问题。
 \begin{equation}
   \label{equ:chap2:opt1}
@@ -205,7 +205,7 @@ $(2w,2b)$会导致函数间隔变为原来的两倍。因此，我们需要引�
 几何间隔相等，从而保证了所有训练样本的几何间隔也至少是$\gamma$。
 
 由于约束条件$\|w\|=1$是非凸的，因此这个问题不易直接用标准优化软件工具求解。因此将其转化为
-~\ref{equ:chap2:opt2}式所示的优化问题。
+~(\ref{equ:chap2:opt2})式所示的优化问题。
 \begin{equation}
   \label{equ:chap2:opt2}
   \begin{aligned}
@@ -227,12 +227,12 @@ $(2w,2b)$会导致函数间隔变为原来的两倍。因此，我们需要引�
   \hat{\gamma} = 1
 \end{equation}
 
-将~\ref{equ:chap2:constrain}式代入~\ref{equ:chap2:opt2}，并将最大化$\hat{\gamma}/\|w\|=1/\|w\|$
-替换为最小化$\frac{1}{2}\|w\|^2$，可以得到~\ref{equ:chap2:opt3}式所示的优化问题。
+将~(\ref{equ:chap2:constrain})式代入~(\ref{equ:chap2:opt2})，并将最大化$\hat{\gamma}/\|w\|=1/\|w\|$
+替换为最小化$\frac{1}{2}\|w\|^2$，可以得到~(\ref{equ:chap2:opt3})式所示的优化问题。
 \begin{equation}
   \label{equ:chap2:opt3}
   \begin{aligned}
-    \min{w,b} &
+    \min_{w,b} &
     & & \frac{1}{2}\|w\|^2 \\
     \text{s.t.} &
     & & y^{(i)}\left(w^Tx^{(i)}+b\right)\geq 1, i=1,...,m
@@ -241,12 +241,12 @@ $(2w,2b)$会导致函数间隔变为原来的两倍。因此，我们需要引�
 
 \subsubsection{拉格朗日对偶问题}
 
-虽然~\ref{equ:chap2:opt3}式表示的优化问题可以使用商业的二次规划（Quadratic Programming, QP）
+虽然~(\ref{equ:chap2:opt3})式表示的优化问题可以使用商业的二次规划（Quadratic Programming, QP）
 代码来求解，但是一般情况下我们都是选择将其转化为拉格朗日对偶形式来求解。这对我们使用核函数来
 使模型更好地应用于高维特征空间是至关重要的。另外，其对偶形式可以通过一些迭代算法来求解，
 通常情况下比直接使用QP软件求解更加高效。
 
-~\ref{equ:chap2:opt3}式表示的原问题对应的拉格朗日函数如~\ref{equ:chap2:lagrangian}式所示。
+~(\ref{equ:chap2:opt3})式表示的原问题对应的拉格朗日函数如~(\ref{equ:chap2:lagrangian})式所示。
 \begin{equation}
   \label{equ:chap2:lagrangian}
   \mathcal{L}(w,b,\alpha)=\frac{1}{2}\|w\|^2-\sum_{i=1}^m \alpha_i\left[y^{(i)}\left(w^Tx^{(i)}+b\right)-1\right]
@@ -270,7 +270,7 @@ $\mathcal{L}$关于$b$的偏导数为0，得到：
   \frac{\partial}{\partial b}\mathcal{L}(w,b,\alpha)=\sum_{i=1}^m\alpha_iy^{(i)}=0
 \end{equation}
 
-将~\ref{equ:chap2:expression_w}式和~\ref{equ:chap2:derivative_b}式代入~\ref{equ:chap2:lagrangian}式
+将~(\ref{equ:chap2:expression_w})式和~(\ref{equ:chap2:derivative_b})式代入~(\ref{equ:chap2:lagrangian})式
 化简可得：
 \begin{equation}
   \label{equ:chap2:dual_objective}
@@ -278,8 +278,8 @@ $\mathcal{L}$关于$b$的偏导数为0，得到：
   y^{(i)}y^{(j)}\alpha_i\alpha_j(x^{(i)})^Tx^{(j)}
 \end{equation}
 
-加上拉格朗日乘子$\alpha_i$非负的约束条件，以及~\ref{equ:chap2:derivative_b}式的约束条件，可以得到
-对偶优化问题如~\ref{equ:chap2:dual_opt}式所示。
+加上拉格朗日乘子$\alpha_i$非负的约束条件，以及~(\ref{equ:chap2:derivative_b})式的约束条件，可以得到
+对偶优化问题如~(\ref{equ:chap2:dual_opt})式所示。
 \begin{equation}
   \label{equ:chap2:dual_opt}
   \begin{aligned}
@@ -298,8 +298,8 @@ $\mathcal{L}$关于$b$的偏导数为0，得到：
 很多其他算法都是基于该算法设计的。这些算法使得我们不必直接通过二次规划的方式求解该优化问题，
 保证了模型在特征维度很大或者样本数量很多的情况下仍然能够有效求解。
 
-当我们获得对偶问题的最优解$\alpha^*$之后，可以通过~\ref{equ:chap2:expression_w}式来计算$w^*$，
-并通过~\ref{equ:chap2:expression_b}式来计算$b^*$。
+当我们获得对偶问题的最优解$\alpha^*$之后，可以通过~(\ref{equ:chap2:expression_w})式来计算$w^*$，
+并通过~(\ref{equ:chap2:expression_b})式来计算$b^*$。
 \begin{equation}
   \label{equ:chap2:expression_b}
   b^*=-\frac{\max_{i:y^{(i)}=-1}{w^*}^Tx^{(i)}+\min_{i:y^{(i)}=1}{w^*}^Tx^{(i)}}{2}
@@ -327,7 +327,7 @@ $\mathcal{L}$关于$b$的偏导数为0，得到：
 \end{figure}
 
 为了使得模型在非线性可分的情况下仍然有效，同时对异常点的干扰更加鲁棒，我们将原来的优化问题
-重新写为~\ref{equ:chap2:opt_reg}式：
+重新写为~(\ref{equ:chap2:opt_reg})式：
 \begin{equation}
   \label{equ:chap2:opt_reg}
   \begin{aligned}
@@ -341,8 +341,8 @@ $\mathcal{L}$关于$b$的偏导数为0，得到：
 \end{equation}
 
 即允许样本的函数间隔小于1（等价于被错分），并且在目标函数中引入一个惩罚项$C\xi_i$。参数C
-控制惩罚向所占的权重，被称为惩罚因子。同样地，我们可以得到该优化问题的拉格朗日对偶问题，如
-~\ref{equ:chap2:dual_opt_reg}所示。
+控制惩罚项所占的权重，被称为惩罚因子。同样地，我们可以得到该优化问题的拉格朗日对偶问题，如
+~(\ref{equ:chap2:dual_opt_reg})所示。
 \begin{equation}
   \label{equ:chap2:dual_opt_reg}
   \begin{aligned}
@@ -358,17 +358,17 @@ $\mathcal{L}$关于$b$的偏导数为0，得到：
 
 \subsubsection{核函数}
 
-从~\ref{equ:chap2:dual_opt_reg}中可以看出，模型可以写成一个完全关于内积$\langle x,z\rangle$的形式，
+从~(\ref{equ:chap2:dual_opt_reg})中可以看出，模型可以写成一个完全关于内积$\langle x,z\rangle$的形式，
 意味着如果我们使用一种特征映射$\phi$将输入特征$x$变换到空间$\phi(x)$，那么我们可以将所有的内积
 替换为$\langle\phi(x),\phi(z)\rangle$。一般地，给定一种特征映射$\phi$，我们定义与之对应的核函数如
-~\ref{equ:chap2:kernel}所示。
+~(\ref{equ:chap2:kernel})所示。
 \begin{equation}
   \label{equ:chap2:kernel}
   K(x,z)=\phi(x)^T\phi(z)
 \end{equation}
 
 特别地，当$\phi(x)=x$时，$K(x,z)=\langle x,z\rangle$，我们称之为线性核，此时模型即为
-~\ref{equ:chap2:dual_opt_reg}式所示。除此之外，还有很多常用的核函数，举例如下：
+~(\ref{equ:chap2:dual_opt_reg})式所示。除此之外，还有很多常用的核函数，举例如下：
 
 1）多项式核函数
 \begin{equation}
@@ -392,18 +392,27 @@ $\mathcal{L}$关于$b$的偏导数为0，得到：
 
 \subsection{基于下采样的单一尺度特征提取方法}
 
-给定一个信号片段$x$，其采样点个数为$N$，即$x=(x_1,x_2,...,x_N)^T$，我们希望得到的特征个数
-为$L$。首先我们对$x$进行~\ref{equ:chap2:rdft}式所示的实数形式的离散傅立叶变换，得到RDFT
-频谱序列$\hat{X}$，由~\ref{subsection:rdft}节中的介绍可知，$\hat{X}$的维度也是$N$，即
-$\hat{X} = (\hat{X}_1, \hat{X}_2, ..., \hat{X}_N)^T$。为了避免样本间相位不同对最终模型的
-诊断精度产生影响，同时也为了避免在后续的操作中正负值之间相互抵消，我们对RDFT频谱序列取了
-绝对值，即$X = (|\hat{X}_1|, |\hat{X}_2|, ..., |\hat{X}_N|)^T$，本文中之后提到的频谱序列
-均是指$X$。接着我们使用平均值下采样来进一步提取特征，将序列$X$等分为$L$个连续
-的小区间，并且对各个区间内的值进行平均，得到长度为L的特征向量$V=(V_1,V_2,...,V_L)^T$。
-这个过程可以用~\ref{equ:chap2:pooling}式表示，其中$[N/L]$表示不大于$N/L$的最大整数。
+给定一个信号片段$x$，其采样点个数为$N$，即$x=(x_1,x_2,...,x_N)^T$。首先我们
+对$x$进行~(\ref{equ:chap2:rdft})式所示的实数形式的离散傅立叶变换，得到RDFT
+频谱序列$\widetilde{x}$，由~\ref{subsection:rdft}节中的介绍可知，$\widetilde{x}$
+的维度也是$N$，即$\widetilde{x} = (\widetilde{x}_1, \widetilde{x}_2, ...,
+\widetilde{x}_N)^T$。为了避免样本间相位不同对最终模型的诊断精度产生影响，同
+时也为了避免在后续的操作中正负值之间相互抵消，我们对RDFT频谱序列取了绝对值，
+即$X = (|\widetilde{x}_1|, |\widetilde{x}_2|, ..., |\widetilde{x}_N|)^T$，本
+文中之后提到的频谱序列均是指$X$。接下来我们使用核宽度为$F$的平均值下采样来进
+一步提取特征，假设我们希望得到的特征个数为$L$，那么$F$和$L$满足~(\ref{equ:chap2:f_l})
+式所示的关系。
+\begin{equation}
+  \label{equ:chap2:f_l}
+  F=\lfloor N/L \rfloor
+\end{equation}
+
+其中$\lfloor x \rfloor$表示不大于$x$的最大整数。将序列$X$等分为$L$个连续不重
+叠的小区间，并且对各个区间内的值进行平均，得到长度为L的特征向量$V=(V_1,V_2,...,V_L)^T$。
+这个过程可以用~(\ref{equ:chap2:pooling})式表示。
 \begin{equation}
   \label{equ:chap2:pooling}
-  V_k=\frac{1}{[N/L]}\sum_{j=1}^{[N/L]}X_{(k-1)[N/L]+j}, k=1,2,...,L
+  V_k=\frac{1}{F}\sum_{j=1}^{F}X_{(k-1)F+j}, k=1,2,...,L
 \end{equation}
 
 使用这样一种特征提取过程的优势在于，相对于直接使用信号频谱序列作为输入特征，
@@ -411,7 +420,7 @@ $\hat{X} = (\hat{X}_1, \hat{X}_2, ..., \hat{X}_N)^T$。为了避免样本间相�
 从而提升分类器训练和预测过程的速度，保证诊断过程的是实时性。此外，在特征提取阶段
 使用平均值下采样还可以降低某些特定频段的噪声所带来的影响，使得整个模型具有更好的
 鲁棒性。此外，我们在使用平均值下采样的过程中，设定了一个参数$L$，也就是最终得到的
-特征个数，我们会在之后的仿真实验中对比该参数的变化对模型的影响，从而选择最佳的参数值。
+特征个数，我们会在之后的实验中对比该参数的变化对模型的影响，从而选择最佳的参数值。
 
 图~\ref{fig:average_pooling}显示了一个采样点数为384的信号片段，其对应的频谱序列，
 以及使用平均值下采样提取的特征个数为32的特征向量。
@@ -432,7 +441,7 @@ $\hat{X} = (\hat{X}_1, \hat{X}_2, ..., \hat{X}_N)^T$。为了避免样本间相�
 
 假设在一个故障诊断问题中，存在三类可能的故障位置，我们记为位置A、位置B、位置C，
 每一类故障位置都可能会发生3种不同程度的故障，我们记为尺寸1、尺寸2、尺寸3，同时还有一类
-是正常样本。那么我们可以针对故障类别的这种层次性，设计一个由5个自分类器构成的级联分类
+是正常样本。那么我们可以针对故障类别的这种层次性，设计一个由5个子分类器构成的级联分类
 过程，如图~\ref{fig:cascade_classifier}所示。
 \begin{figure}[ht] % use float package if you want it here
   \centering
@@ -444,20 +453,20 @@ $\hat{X} = (\hat{X}_1, \hat{X}_2, ..., \hat{X}_N)^T$。为了避免样本间相�
 图中每个菱形表示一个子分类器，可以根据实际情况采用不同的算法实现，不同子分类器所用的
 算法也不一定相同。图中的每一个矩形框代表一种故障类型，可以看出这个例子中总共有10类样本，
 其中一类是正常样本。可以看出，整个级联分类过程整体上分为三个阶段，第一个阶段由一个子分
-类器判断是否为故障样本；接下来一个阶段有一个子分类器判断故障发生的位置；最后一个阶段
+类器判断是否为故障样本；接下来一个阶段由一个子分类器判断故障发生的位置；最后一个阶段
 用三个子分类器分别判断故障的尺寸。
 
-\section{实验仿真}
+\section{实验验证}
 
 \subsection{实验数据}
 
-本文的所有仿真实验所用的数据均是来自凯斯西储大学（Case Western Reserve University, CWRU）
+本文的所有实验所用的数据均是来自凯斯西储大学（Case Western Reserve University, CWRU）
 的滚动轴承加速度测量数据，其中包括正常工作下的轴承数据和在各种不同故障位置和故障
 尺寸下的轴承数据。在旋转机械故障诊断领域，该数据集已经成为标准的测试数据集之一，已经有很多
-研究人员使用该数据集来仿真测试其故障诊断模型。
+研究人员使用该数据集来验证其故障诊断模型。
 
 数据采集的实验装置如图~\ref{fig:teststand}所示，测试台由一个2马力的三相感应电机（左）、
-扭矩传感器/编码器（中间）、测力计（右）和控制电子设备（图中未显示）组成。 
+扭矩传感器和编码器（中间）、测力计（右）和控制电子设备（图中未显示）组成。 
 用来收集振动数据的加速度传感器被磁性底座固定在轴承上方的机壳上，处于电机外壳的驱动端和
 风扇端的12点钟位置。实验中使用16通道DAT记录仪收集振动信号，并在Matlab环境中进行后续处理。
 所有数据文件均采用Matlab（*.mat）格式保存。该数据集以12kHz的采样频率收集和记录数据，另外
@@ -495,10 +504,10 @@ $\hat{X} = (\hat{X}_1, \hat{X}_2, ..., \hat{X}_N)^T$。为了避免样本间相�
 的故障位置和故障尺寸如表~\ref{tab:class_desc}所示。
 \begin{table}[htb]
   \centering
-  \begin{minipage}[t]{0.8\linewidth} % 如果想在表格中使用脚注，minipage是个不错的办法
+  \begin{minipage}[t]{0.7\linewidth} % 如果想在表格中使用脚注，minipage是个不错的办法
   \caption{12类数据对应的故障位置和尺寸}
   \label{tab:class_desc}
-    \begin{tabularx}{\linewidth}{lXX}
+    \begin{tabularx}{\linewidth}{XXX}
       \toprule[1.5pt]
       类别标签 & 故障位置 & 故障尺寸（英寸） \\\midrule[1pt]
       0 & 无 & 无 \\
@@ -520,11 +529,11 @@ $\hat{X} = (\hat{X}_1, \hat{X}_2, ..., \hat{X}_N)^T$。为了避免样本间相�
 
 \subsection{实验过程}
 
-从表~\ref{tab:class_desc}中可以看到，除了一类正常数据，以及在故障尺寸为0.028英尺时包含钢球和内圈两种故障位置，
-其余的三类故障尺寸都分别包含钢球、内圈和外圈三种故障位置，一共是12类数据。根据
-~\ref{subsection:cascade_model}节中的级联分类思路，以及本文所使用的数据的特点，我们设计了
-如图~\ref{fig:cascade_classifier_exp}所示的级联故障诊断模型，分类器输出的类别标签与实际样本的对应关系
-参见表~\ref{tab:class_desc}。
+从表~\ref{tab:class_desc}中可以看到，除了一类正常数据，以及在故障尺寸为0.028
+英尺时包含钢球和内圈两种故障位置，其余的三类故障尺寸都分别包含钢球、内圈和外
+圈三种故障位置，一共是12类数据。根据~\ref{subsection:cascade_model}节中的级联
+分类思路，以及本文所使用的数据的特点，我们设计了如图~\ref{fig:cascade_classifier_exp}
+所示的级联故障诊断模型，分类器输出的类别标签与实际样本的对应关系参见表~\ref{tab:class_desc}。
 \begin{figure}[ht] % use float package if you want it here
   \centering
   \includegraphics[height=11cm]{cascade_classifier_exp}
@@ -543,12 +552,12 @@ $\hat{X} = (\hat{X}_1, \hat{X}_2, ..., \hat{X}_N)^T$。为了避免样本间相�
   \label{tab:classifier_desc}
     \begin{tabularx}{\linewidth}{lXXX}
       \toprule[1.5pt]
-      分类器序号 & 输出标签个数 & 训练所用数据标签 & 分类器功能 \\\midrule[1pt]
-      1 & 2 & 0-11 & 判断样本是否故障\\
-      2 & 3 & 1-11 & 判断故障样本的故障位置\\
-      3 & 4 & 1-4 & 判断钢球故障样本的故障尺寸\\
-      4 & 4 & 5-8 & 判断内圈故障样本的故障尺寸\\
-      5 & 3 & 9-11 & 判断外圈故障样本的故障尺寸\\
+      序号 & 输出标签个数 & 训练所用数据标签 & 分类器功能 \\\midrule[1pt]
+      1 & 2 & 0-11 & 判断是否故障\\
+      2 & 3 & 1-11 & 判断故障位置\\
+      3 & 4 & 1-4 & 判断钢球故障尺寸\\
+      4 & 4 & 5-8 & 判断内圈故障尺寸\\
+      5 & 3 & 9-11 & 判断外圈故障尺寸\\
       \bottomrule[1.5pt]
     \end{tabularx}
   \end{minipage}
@@ -556,10 +565,10 @@ $\hat{X} = (\hat{X}_1, \hat{X}_2, ..., \hat{X}_N)^T$。为了避免样本间相�
 
 由于CWRU数据集中每一种类别的数据都存储在一个Matlab文件（*.mat）中，并且每一个文件中都
 包含了一段至少12000个连续的采样点。因此，为了获得足够数量的样本对设计的故障诊断模型
-进行训练和预测，我们从每个数据文件中随机地截取M个长度为N的信号片段，并且将其中的3/4M个
-信号片段作为训练样本，其余M/4个信号片段作为预测样本。在选择N值的时候，一方面要保证能够
-从有限的采样点中截取到足够多的信号片段来训练我们的模型，因此N值不能太大；另一方面要保证
-截取的长度为N的信号片段中能够包含足够的信息，因此N值也不能太小。在本文的所有仿真实验中
+进行训练和预测，我们从每个数据文件中随机地截取M个长度为N的信号片段，并且将其中的$3M/4$个
+信号片段作为训练样本，其余$M/4$个信号片段作为预测样本。在选择$N$值的时候，一方面要保证能够
+从有限的采样点中截取到足够多的信号片段来训练我们的模型，因此$N$值不能太大；另一方面要保证
+截取的长度为N的信号片段中能够包含足够的信息，因此N值也不能太小。在本文的所有实验中
 均使用$N=384$。
 
 \subsection{实验结果及分析}
@@ -577,8 +586,8 @@ $\hat{X} = (\hat{X}_1, \hat{X}_2, ..., \hat{X}_N)^T$。为了避免样本间相�
 
 从图中可以看出，由于样本的截取过程是随即进行的，因此同一类样本间存在很大的相位差别，
 因此如果直接使用原始信号片段来训练分类器的效果比较差。使用本章中基于下采样的特征提取方法，
-对图~\ref{fig:series}中列出的12个信号频段进行特征提取，所获得的特征向量如图
-~\ref{fig:average_pooling_features_12}所示。
+对图~\ref{fig:series}中列出的12个信号频段进行特征提取，所获得的特征向量如图~\ref{fig:average_pooling_features_12}
+所示。
 \begin{figure}[ht] % use float package if you want it here
   \centering
   \includegraphics[height=9cm]{average_pooling_features_12}
@@ -588,9 +597,8 @@ $\hat{X} = (\hat{X}_1, \hat{X}_2, ..., \hat{X}_N)^T$。为了避免样本间相�
 
 可以看出，与图~\ref{fig:series}中显示的原始信号片段相比，使用本章中的特征提取方法获得
 的结果作为特征向量时，避免信号片段间相位的差异带来的分类难度，使得类别之间具有更好的区分性，
-而同一类样本之间的相似程度也更高，因此能够提升最终的故障诊断精度。另一方面，图
-~\ref{fig:average_pooling_features_12}中的特征向量的维度为12，相比于原始信号片段的维度384，
-极大程度地降低了特征的维度，加快了模型的训练过程。
+而同一类样本之间的相似程度也更高，因此能够提升最终的故障诊断精度。另一方面，图~\ref{fig:average_pooling_features_12}
+中的特征向量的维度为12，相比于原始信号片段的维度384，极大程度地降低了特征的维度，加快了模型的训练过程。
 
 此外，本章中设计的特征提取算法中的参数L，也就是最终得到的特征向量的维度，是可以人为指定的，
 例如图~\ref{fig:average_pooling_features_12}中显示的是$L=12$时提取的特征向量，当$L=384$时，
@@ -614,7 +622,7 @@ $\hat{X} = (\hat{X}_1, \hat{X}_2, ..., \hat{X}_N)^T$。为了避免样本间相�
 所示。
 \begin{table}[htb]
   \centering
-  \begin{minipage}[t]{0.8\linewidth} % 如果想在表格中使用脚注，minipage是个不错的办法
+  \begin{minipage}[t]{0.6\linewidth} % 如果想在表格中使用脚注，minipage是个不错的办法
   \caption{不同特征个数下模型的预测精度和训练时间}
   \label{tab:chap2_acc_time}
     \begin{tabularx}{\linewidth}{lXX}
@@ -657,21 +665,21 @@ $\hat{X} = (\hat{X}_1, \hat{X}_2, ..., \hat{X}_N)^T$。为了避免样本间相�
   \begin{minipage}[t]{0.9\linewidth} % 如果想在表格中使用脚注，minipage是个不错的办法
   \caption{L=48时模型在测试集上的混淆矩阵}
   \label{tab:chap2:confusion_matrix}
-    \begin{tabularx}{\linewidth}{l|XXXXXXXXXXXX}
+    \begin{tabularx}{\linewidth}{XXXXXXXXXXXX}
       \toprule[1.5pt]
-         &    0 &   1 &   2 &   3 &   4 &   5 &   6 &   7 &   8 &   9 &  10 &  11 \\\midrule[1pt]
-      0  & 1579 &   0 &   0 &   0 &   0 &   0 &   0 &   0 &   0 &   0 &   0 &   0 \\
-      1  &    0 & 697 &   2 &  11 &   0 &   0 &   0 &   0 &   0 &   0 &   0 &   0 \\
-      2  &    0 &  83 & 682 &  18 &   0 &   0 &   0 &   0 &   0 &   0 &   0 &   1 \\
-      3  &    0 &  20 &   0 & 765 &   0 &   0 &   0 &   0 &   0 &   0 &   0 &   0 \\
-      4  &    0 &   0 &   0 &   0 & 777 &   0 &   0 &   0 &   0 &   0 &   0 &   0 \\
-      5  &    0 &   0 &   0 &   0 &   0 & 780 &   0 &   0 &   0 &   0 &   0 &   0 \\
-      6  &    0 &   0 &   0 &   0 &   0 &   0 & 784 &   0 &   0 &   0 &   0 &   0 \\
-      7  &    0 &   0 &   0 &   0 &   0 &   0 &   0 & 786 &   0 &   0 &   0 &   0 \\
-      8  &    0 &   0 &   0 &   0 &   0 &   0 &   0 &   0 & 777 &   0 &   0 &   0 \\
-      9  &    0 &   0 &   0 &   0 &   0 &   0 &   0 &   0 &   0 & 785 &   0 &   0 \\
-      10 &    0 &   0 &   0 &   0 &   0 &   0 &   0 &   0 &   0 &   0 & 784 &   0 \\
-      11 &    0 &   0 &   0 &   0 & 395 &   0 &   1 &   2 &   0 &  93 &   0 & 297 \\
+         0 &   1 &   2 &   3 &   4 &   5 &   6 &   7 &   8 &   9 &  10 &  11 \\\midrule[1pt]
+      1579 &   0 &   0 &   0 &   0 &   0 &   0 &   0 &   0 &   0 &   0 &   0 \\
+         0 & 697 &   2 &  11 &   0 &   0 &   0 &   0 &   0 &   0 &   0 &   0 \\
+         0 &  83 & 682 &  18 &   0 &   0 &   0 &   0 &   0 &   0 &   0 &   1 \\
+         0 &  20 &   0 & 765 &   0 &   0 &   0 &   0 &   0 &   0 &   0 &   0 \\
+         0 &   0 &   0 &   0 & 777 &   0 &   0 &   0 &   0 &   0 &   0 &   0 \\
+         0 &   0 &   0 &   0 &   0 & 780 &   0 &   0 &   0 &   0 &   0 &   0 \\
+         0 &   0 &   0 &   0 &   0 &   0 & 784 &   0 &   0 &   0 &   0 &   0 \\
+         0 &   0 &   0 &   0 &   0 &   0 &   0 & 786 &   0 &   0 &   0 &   0 \\
+         0 &   0 &   0 &   0 &   0 &   0 &   0 &   0 & 777 &   0 &   0 &   0 \\
+         0 &   0 &   0 &   0 &   0 &   0 &   0 &   0 &   0 & 785 &   0 &   0 \\
+         0 &   0 &   0 &   0 &   0 &   0 &   0 &   0 &   0 &   0 & 784 &   0 \\
+         0 &   0 &   0 &   0 & 395 &   0 &   1 &   2 &   0 &  93 &   0 & 297 \\
       \bottomrule[1.5pt]
     \end{tabularx}
   \end{minipage}
@@ -688,6 +696,6 @@ $\hat{X} = (\hat{X}_1, \hat{X}_2, ..., \hat{X}_N)^T$。为了避免样本间相�
 支持向量机算法的级联诊断模型。特征提取阶段使用了平均值下采样来对信号片段频谱序列
 的特征个数进行压缩，同时也能够减弱信号中特定频谱的噪声对诊断效果的影响。另外，由于我们
 通过改变下采样的宽度来控制特征向量的维度，因此我们能够得到不同尺度下的特征，因此我们
-通过对比仿真实验考察了不同尺度的特征对诊断模型的影响，最后给出了能够使模型预测精度达到
+通过对比实验考察了不同尺度的特征对诊断模型的影响，最后给出了能够使模型预测精度达到
 最高的特征维度。但是我们也分析了该模型在测试集上的预测结果的混淆矩阵，发现在某些类别
 的样本上表现并不理想，这也是后面的章节中设计的模型需要进一步提升的地方。
