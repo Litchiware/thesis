@@ -85,7 +85,7 @@
   
   2）基于深度神经网络设计了一种单一尺度的故障诊断方法，实现了信号特
   征的逐层提取，验证了深度神经网络用于信号特征提取和故障模式分类的
-  强大能力；实验证明多个卷积层＋下采样层堆叠的结构在提取主要特征的同
+  强大能力；实验证明多个卷积层和下采样层堆叠的结构在提取主要特征的同
   时能够避免过多信息的丢失。
   
   3）提出了一种基于深度神经网络的多尺度故障诊断方法，实现了多种尺度
@@ -97,8 +97,8 @@
   结果保留下来，并且跟下采样后获得的包含更多整体特征的结果进行融合，
   从而提升模型对输入信号的理解能力。
 
-  实验证明，本文提出的基于深度学习的多尺度故障诊断方法比其他常见的
-  多尺度故障诊断方法的诊断精度更高。
+  实验证明，本文提出的基于深度神经网络的多尺度故障诊断方法比其他常
+  见的多尺度故障诊断方法的诊断精度更高。
 
 \end{cabstract}
 
@@ -112,48 +112,48 @@
   fault diagnosis technology is the key to reliable operation of
   these large and complex systems.
 
-  This paper mainly studies the data based fault diagnosis algorithms.
-  We first represent the signal segment with resulting sequence of real
-  discrete Fourier transform (RDFT), and propose two single-scale
-  feature based models and one multi-scale feature based model to
-  extract further features and to do fault classification.
+  The way to extract potential fault characteristics from a large
+  number of process data is critical to the effect of data-driven
+  fault diagnosis methods. Single-scale feature based fault diagnosis
+  methods can not effectively exploit and utilize the information
+  of various scales in the process data. The deep neural network
+  has powerful data fitting capability and can dig deep features,
+  so it is very suitable to be used in designing multi-scale fault
+  diagnosis method to extract and classify fault features. In this
+  dissertation, the multi-scale fault diagnosis methods based on deep
+  neural network is studied. The main work is as follows:
 
-  First, we use a single average pooling operator to make single-scale
-  feature extraction on the RDFT sequence. A cascade classifier is
-  designed in view of the hierarchies of the sample classes.
-  In experimental verification, we also investigate the impact of the
-  kernel width of average pooling operator on the model's final prediction
-  accuracy. Experimental results show that whether the kernel width is
-  too large or too small, it will decrease the model's accuracy, which is the
-  limitation of using one single pooling operator for feature extraction.
-  So we consider designing a model that contains multiple pooling operations
-  to perform feature extraction.
+  1) Based on the downsampling operation and a cascaded SVM classifier,
+  a single-scale fault diagnosis method is designed to verify the
+  effectiveness of the downsampling operation in signal feature extraction.
+  Experiments show that whether the kernel width of downsampling operator
+  is too large or too small, it will decrease the model's accuracy,
+  which is the limitation of using one single downsampling operator
+  for feature extraction. 
 
-  The convolutional neural network (CNN) utilizes the structure of stacking
-  multiple convolutional layers and pooling layers to extracting advanced 
-  features from input data. So we design a network with a similar structure
-  as VGG to complete feature extraction and classification of the RDFT sequences.
-  Although this model also extracts single-scale features, compared with the
-  previous one, due to multi-stage pooling operations, we can avoid the loss
-  of too much information when extract the advanced features from the RDFT
-  sequence.
+  2) Based on the deep neural network, a single-scale fault diagnosis
+  method is designed to accomplish the layer-by-layer extraction of signal
+  characteristics, which verifies the ability of deep neural network
+  for signal feature extraction and fault pattern classification. Experiments
+  show that the structure of multiple stacked convolutional and subsampling
+  layers can avoid the loss of too much information while extracting main features.
 
-  To further improve the diagnostic accuracy of the model, upsampling layer is
-  introduced into the VGG-like model, and a recursive network structure is
-  designed to be able to extract multi-scale features. Then, as a part of the 
-  whole network, it is used to extract and merge features in multiple scales.
-  When establishing this multi-scale network, we deal with the input in two
-  branches in each recursion. One of them goes through the pooling layers,
-  convolutional layers and upsampling layers, while the other branch only goes
-  through convolutional layers, both of which are finally added together as the
-  output returned to the upper recursion. The advantage of this structure is
-  that some details of the input sequence are preserved by adding the branch
-  without pooling operations to the final result, making the model understand
-  the input sequence more deeply.
+  3) A multi-scale fault diagnosis method based on deep neural network is
+  proposed, which extracting and fusing features of various scales automatically.
+  In the model, upsampling layers are introduced and a network structure
+  with the capability of extracting and fusing multi-scale features is
+  established in a recursive way. The input of this network is processed
+  in two branches recursively, one of which is downsampled, convoluted
+  and upsampled and the other branch is convolved only. Then, the two branches
+  are added together and returned to the upper recursion. The advantage of
+  this structure is that it can preserve the results without sampling operations
+  which have more detail information and fuse it with the results with
+  sampling operations which have more overall features, making the model
+  understand the input signal more deeply.
 
-  Through the experiments on CWRU rolling bearing fault database, the diagnostic
-  effect of the three models are compared, and the advantage of multi-scale feature
-  extraction in fault diagnosis algorithm are verified.
+  Experiments show that the multi-scale fault diagnosis method based on deep
+  neural network proposed in this dissertation can achieve higher accuracy
+  than other common multi-scale fault diagnosis methods.
 \end{eabstract}
 
 % \ekeywords{\TeX, \LaTeX, CJK, template, thesis}
